@@ -1,10 +1,11 @@
 import './App.css';
-import Counter from './components/Counter';
+// import Counter from './components/Counter';
+import CounterContainer from './containers/CounterContainer';
 import Todos from './components/Todos';
 const App = () => {
-  return(
+  return (
     <div>
-      <Counter number={0}/>
+      <CounterContainer />
       <Todos />
     </div>
   )
