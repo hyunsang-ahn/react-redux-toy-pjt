@@ -1,12 +1,12 @@
 import React from 'react';
 
-const Counter = ({ number, onIncrese, onDecrese }) => {
+const Counter = ({ number, onIncrease, onDecrease }) => {
   return (
     <div>
       <h1>{number}</h1>
       <div>
-        <button onClick={onIncrese} >+1</button>
-        <button onClick={onDecrese} >-1</button>
+        <button onClick={onIncrease} >+1</button>
+        <button onClick={onDecrease} >-1</button>
       </div>
     </div>
   )
