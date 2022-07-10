@@ -1,5 +1,5 @@
-import { createActions, handleActions } from "redux-actions"
-
+import { createAction, handleActions } from "redux-actions"
+import produce from 'immer'
 const CHANGE_INPUT = 'todos/CHANGE_INPUT' //인풋값 변경
 const INSERT = 'todos/INSERT' // 새로운  todo 등록
 const TOGGLE = 'todos/TOGGLE' //todo 체크 or 체크해제
@@ -14,7 +14,7 @@ const REMOVE = 'todos/REMOVE' // 삭제
 // )
 
 
-export const changeInput = createActions(CHANGE_INPUT, input => input)
+export const changeInput = createAction(CHANGE_INPUT, input => input)
 
 let id = 3; //insert가 호출될 때마다 1씩 더해짐.
 
@@ -28,7 +28,7 @@ let id = 3; //insert가 호출될 때마다 1씩 더해짐.
 //     }
 //   }
 // )
-export const insert = createActions(INSERT, text => (
+export const insert = createAction(INSERT, text => (
   {
     id: id++,
     text,
@@ -43,7 +43,7 @@ export const insert = createActions(INSERT, text => (
 //     id
 //   }
 // )
-export const toggle = createActions(TOGGLE, id => id)
+export const toggle = createAction(TOGGLE, id => id)
 
 
 // export const remove = (id) => (
@@ -52,7 +52,7 @@ export const toggle = createActions(TOGGLE, id => id)
 //     id
 //   }
 // )
-export const remove = createActions(REMOVE, id => id)
+export const remove = createAction(REMOVE, id => id)
 
 
 const initialState = {
@@ -101,10 +101,20 @@ const initialState = {
 
 
 const todos = handleActions({
-  [CHANGE_INPUT]: (state, action) => ({ ...state, input: action.payload }),
-  [INSERT]: (state, action) => ({ ...state, todos: state.todos.concat(action.payload) }),
-  [TOGGLE]: (state, action) => ({ ...state, todos: state.todos.map(todo => todo.id === action.payload ? { ...todo, done: !todo.done } : todo) }),
-  [REMOVE]: (state, action) => ({ ...state, todos: state.todos.filter(todo => todo.id !== action.id) })
+  // [CHANGE_INPUT]: (state, action) => ({ ...state, input: action.payload }),
+  // [INSERT]: (state, action) => ({ ...state, todos: state.todos.concat(action.payload) }),
+  // [TOGGLE]: (state, action) => ({ ...state, todos: state.todos.map(todo => todo.id === action.payload ? { ...todo, done: !todo.done } : todo) }),
+  // [REMOVE]: (state, action) => ({ ...state, todos: state.todos.filter(todo => todo.id !== action.id) })
+  [CHANGE_INPUT]: (state, { payload: input }) => produce(state, draft => { draft.input = input }),
+  [INSERT]: (state, { payload: todo }) => produce(state, draft => { draft.todos.push(todo) }),
+  [TOGGLE]: (state, { payload: id }) => produce(state, draft => {
+    const todo = draft.todos.find(todo => todo.id === id)
+    todo.done = !todo.done;
+  }),
+  [REMOVE]: (state, { payload: id }) => produce(state, draft => {
+    const index = draft.todos.findIndex(todo => todo.id === id)
+    draft.todos.splice(index, 1)
+  })
 
 }, initialState)
 

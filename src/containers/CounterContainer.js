@@ -1,13 +1,22 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import Counter from '../components/Counter';
 import { connect } from 'react-redux/es/exports';
-import {increase, decrease } from '../modules/counter'
+import { increase, decrease } from '../modules/counter'
+import { useSelector, useDispatch } from 'react-redux';
+const CounterContainer = () => {
+  const number = useSelector(state => state.counter.number)
+  console.log('number..............', number)
 
-const CounterContainer = ({ number, increase, decrease }) => {
+  const dispatch = useDispatch()
+  const onIncrease = useCallback(() => dispatch(increase()), [dispatch])
+  const onDecrease = useCallback(() => dispatch(decrease()), [dispatch])
+
   return <Counter
     number={number}
-    onIncrease={increase}
-    onDecrease={decrease}
+    // onIncrease={() => dispatch(increase())}
+    // onDecrease={() => dispatch(decrease())}
+    onIncrease={onIncrease}
+    onDecrease={onDecrease}
   />
 }
 
@@ -54,7 +63,7 @@ const CounterContainer = ({ number, increase, decrease }) => {
 //3번방식
 export default connect(
   state => ({
-    number : state.counter.number,
+    number: state.counter.number,
   }),
   {
     increase,
